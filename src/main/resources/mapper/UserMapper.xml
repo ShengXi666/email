@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cyxssz.email.dao.UserDao">
+
+    <resultMap id="userMap" type="com.cyxssz.email.entity.User">
+        <result property="id" column="id"/>
+        <result property="username" column="usereame"/>
+        <result property="password" column="password"/>
+        <result property="useremail" column="useremail"/>
+        <result property="code" column="code"/>
+        <result property="status" column="status"/>
+    </resultMap>
+    <!--注册用户-->
+    <insert id="register" parameterType="com.cyxssz.email.entity.User">
+        insert into user (username, password, useremail, code, status)
+        value (#{username,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},
+              #{useremail,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{status,jdbcType=INTEGER})
+    </insert>
+    <!--根据激活码code查询用户-->
+    <select id="checkCode" parameterType="String" resultType="com.cyxssz.email.entity.User">
+        select * from user where code = #{code}
+     </select>
+
+    <!-- 激活账户，修改用户状态-->
+    <update id="updateUserStatus" parameterType="com.cyxssz.email.entity.User">
+        update user set status=1,code=null where id=#{id}
+    </update>
+
+    <!--登录,根据 activeStatus=1 进行查询-->
+    <select id="loginUser" resultType="com.cyxssz.email.entity.User">
+      select * from user where username=#{username} and password=#{password} and status=1
+    </select>
+</mapper>
+
